@@ -20,7 +20,7 @@ import java.net.URLConnection;
  */
 public class YahooWeatherService {
     private final String TAG = "YahooWeatherService";
-    private final static String openWeatherURL = "api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s";
+
     private WeatherServiceCallback callback;
     private String location;
     private Exception error;

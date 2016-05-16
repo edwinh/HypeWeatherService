@@ -74,6 +74,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="26dp"
         android:onClick="showWeather"
-        android:enabled="false" />
+        android:enabled="true" />
 
 </RelativeLayout>

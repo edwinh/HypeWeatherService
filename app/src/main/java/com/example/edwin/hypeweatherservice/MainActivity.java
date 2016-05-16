@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
             String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
             cityEditTextView.setText(latlong);
             service.refreshWeather(location);
-            lm.removeUpdates(listener);
+            lm.removeUpdates(listener); //Test
         }
     }
 

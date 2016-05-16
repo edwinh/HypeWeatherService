@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Hype Weather Service</string>
+    <string name="temperature">temperature</string>
+    <string name="condition">condition</string>
+    <string name="location">location</string>
+    <string name="enter_city">Enter city</string>
+    <string name="show_weather">Show Weather</string>
+</resources>

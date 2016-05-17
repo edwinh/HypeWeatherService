@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
     private TextView temperatureTextView;
     private TextView conditionTextView;
     private TextView locationTextView;
-    private EditText cityEditTextView;
+    private TextView cityEditTextView;
     private Button showWeatherButton;
 
     private OpenWeatherService service;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         temperatureTextView = (TextView) findViewById(R.id.temperatureTextView);
         conditionTextView = (TextView) findViewById(R.id.conditionTextView);
         locationTextView = (TextView) findViewById(R.id.locationTextView);
-        cityEditTextView = (EditText) findViewById(R.id.cityEditText);
+        cityEditTextView = (TextView) findViewById(R.id.cityTextView);
         showWeatherButton = (Button) findViewById(R.id.showWeatherButton);
         lm = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
@@ -61,12 +61,16 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
             @Override
             public void onLocationChanged(Location location) {
                 cityEditTextView.setText(location.getLatitude()+ "," + location.getLongitude());
+                lm.removeUpdates(this);
+                service.refreshWeather(location);
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {}
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+                cityEditTextView.setText("Just a moment, locating...");
+            }
             @Override
             public void onProviderDisabled(String provider) {
                 cityEditTextView.setText("Provider Disabled");
@@ -74,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         };
 
     }
-
-    @TargetApi(Build.VERSION_CODES.M)
     private void retrieveWeather() {
 
         final int minTime = 10;
@@ -100,14 +102,26 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
 
         if (lm != null) {
             String provider = lm.getBestProvider(criteria, true);
+            if (provider.equals(LocationManager.PASSIVE_PROVIDER))
+            {
+                dialog.hide();
+                cityEditTextView.setText("Turn on your location services");
+                lm.removeUpdates(listener);
+                return;
+            }
             lm.requestLocationUpdates(provider, minTime, minDistance, listener);
             Location location = lm.getLastKnownLocation(provider);
+            if (location == null ) {
+                cityEditTextView.setText("Just a moment, locating...");
+                return;
+            }
             String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
             cityEditTextView.setText(latlong);
             service.refreshWeather(location);
-            lm.removeUpdates(listener); //Test
+            lm.removeUpdates(listener);
         }
     }
+
 
     //public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {}
 

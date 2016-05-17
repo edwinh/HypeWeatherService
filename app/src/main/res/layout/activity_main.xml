@@ -53,27 +53,27 @@
         android:layout_height="wrap_content"
         android:src="@drawable/yahoo_logo"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageView" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/cityEditText"
+        android:id="@+id/cityTextView"
         android:layout_marginTop="27dp"
-        android:hint="@string/enter_city"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="Enter City" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show_weather"
         android:id="@+id/showWeatherButton"
-        android:layout_below="@+id/cityEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="50dp"
         android:onClick="showWeather"
-        android:enabled="true" />
+        android:enabled="true"
+        android:layout_below="@+id/cityTextView"
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView" />
 
 </RelativeLayout>

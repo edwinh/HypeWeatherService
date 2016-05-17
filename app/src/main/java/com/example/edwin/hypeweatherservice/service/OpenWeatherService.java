@@ -36,6 +36,11 @@ public class OpenWeatherService {
         new AsyncTask<Location, Void, String>() {
             @Override
             protected void onPostExecute(String s) {
+                if (s == null ) {
+                    callback.serviceFailure(error);
+                    return;
+                }
+
                 try {
                     JSONObject json = new JSONObject(s);
                     OpenWeather weather = new OpenWeather();

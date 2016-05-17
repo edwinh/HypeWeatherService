@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         Sys sys = weather.getSys();
         WeatherType weatherType = weather.getWeatherType();
 
+        // TODO:
         int resourceId = getResources().getIdentifier("drawable/icon_"+ weatherType.getIconId(),null,getPackageName());
         @SuppressWarnings("deprecation")
         Drawable weatherIconDrawable = getResources().getDrawable(resourceId);

@@ -13,7 +13,7 @@ public class WeatherType implements JSONPopulator {
     private int weatherID;
     private String mainGroup;
     private String description;
-    private int iconId;
+    private String iconId;
 
 
     public int getWeatherID() {
@@ -28,7 +28,7 @@ public class WeatherType implements JSONPopulator {
         return description;
     }
 
-    public int getIconId() {
+    public String getIconId() {
         return iconId;
     }
 
@@ -37,7 +37,7 @@ public class WeatherType implements JSONPopulator {
         weatherID = data.optInt("id");
         mainGroup = data.optString("main");
         description = data.optString("description");
-        iconId = data.optInt("icon");
+        iconId = data.optString("icon");
 
     }
 }

@@ -1,8 +1,6 @@
 package com.example.edwin.hypeweatherservice.service;
 
-import com.example.edwin.hypeweatherservice.data.Channel;
-
-import java.util.concurrent.ConcurrentHashMap;
+import com.example.edwin.hypeweatherservice.data.yahoo.Channel;
 
 /**
  * Created by Edwin on 7-5-2016.

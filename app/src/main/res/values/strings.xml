@@ -3,6 +3,6 @@
     <string name="temperature">temperature</string>
     <string name="condition">condition</string>
     <string name="location">location</string>
-    <string name="enter_city">Enter city</string>
-    <string name="show_weather">Show Weather</string>
+    <string name="refresh_weather">Refresh</string>
+    <string name="latlong">latlong</string>
 </resources>

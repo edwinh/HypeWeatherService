@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.edwin.hypeweatherservice.data.Channel;
+import com.example.edwin.hypeweatherservice.data.yahoo.Channel;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -3,7 +3,7 @@ package com.example.edwin.hypeweatherservice.service;
 import android.location.Location;
 import android.os.AsyncTask;
 
-import com.example.edwin.hypeweatherservice.data.OpenWeather;
+import com.example.edwin.hypeweatherservice.data.openweather.OpenWeather;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 

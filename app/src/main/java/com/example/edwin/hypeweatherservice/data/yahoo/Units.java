@@ -1,4 +1,6 @@
-package com.example.edwin.hypeweatherservice.data;
+package com.example.edwin.hypeweatherservice.data.yahoo;
+
+import com.example.edwin.hypeweatherservice.data.JSONPopulator;
 
 import org.json.JSONObject;
 

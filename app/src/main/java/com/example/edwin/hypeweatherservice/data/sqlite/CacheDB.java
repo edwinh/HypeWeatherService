@@ -24,7 +24,9 @@ public class CacheDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql;
-        sql = "CREATE TABLE "+ TABLE_WEATHER + " (" + COL_WEATHER_ID + "INTEGER, " + COL_WEATHER_DESC + " TEXT)";
+        sql = "CREATE TABLE "+ TABLE_WEATHER + " (" +
+                COL_WEATHER_ID + "INTEGER, " +
+                COL_WEATHER_DESC + " TEXT)";
         db.execSQL(sql);
     }
 

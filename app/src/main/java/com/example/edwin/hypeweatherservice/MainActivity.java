@@ -25,6 +25,10 @@ import com.example.edwin.hypeweatherservice.data.openweather.WeatherType;
 import com.example.edwin.hypeweatherservice.service.OpenWeatherService;
 import com.example.edwin.hypeweatherservice.service.OpenWeatherServiceCallback;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity implements OpenWeatherServiceCallback {
 
     private static final String TAG = "MainActivity";
@@ -34,10 +38,13 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
     private TextView conditionTextView;
     private TextView locationTextView;
     private TextView latLongTextView;
+    private TextView lastUpdateTimeTextView;
     private OpenWeatherService service;
     private ProgressDialog dialog;
     private LocationManager lm;
     private LocationListener listener;
+    private Location oldLocation;
+    private long lastRefreshTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         conditionTextView = (TextView) findViewById(R.id.conditionTextView);
         locationTextView = (TextView) findViewById(R.id.locationTextView);
         latLongTextView = (TextView) findViewById(R.id.latLongTextView);
+        lastUpdateTimeTextView = (TextView) findViewById(R.id.lastUpdateTimeTextView);
         lm = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         listener = new LocationListener() {
@@ -57,7 +65,11 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
                 lm.removeUpdates(listener);
                 String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
                 latLongTextView.setText(latlong);
-                service.refreshWeather(location);
+
+                if (((lastRefreshTime+(10*60*1000)) < System.currentTimeMillis()) || (location.distanceTo(oldLocation) > 5000) ) {
+                    service.refreshWeather(location);
+                    lastRefreshTime = System.currentTimeMillis();
+                }
             }
 
             @Override
@@ -106,20 +118,31 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
                 return;
             }
 
+
             Location location = lm.getLastKnownLocation(provider);
+            // Store old location to calculate distance from new location
+            oldLocation = location;
+
             if (location == null) {
                 // There is no location at all
                 lm.requestLocationUpdates(provider, minTime, minDistance, listener);
                 return;
             }
-            if (location.getTime()+(1*1000*60) < System.currentTimeMillis())
+
+            // Refresh location if older than x minutes
+            if (location.getTime()+(1*1000*60) < System.currentTimeMillis()) {
                 // Location is older than 1 minute and should be refreshed
                 lm.requestLocationUpdates(provider, minTime, minDistance, listener);
+            }
 
-            // Retrieve weather anyway, regardless of old location
-            service.refreshWeather(location);
-            String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
-            latLongTextView.setText(latlong);
+            // Only refresh if weather information is older than 10 minutes
+            if ((lastRefreshTime+(10*60*1000)) < System.currentTimeMillis()) {
+                service.refreshWeather(location);
+                lastRefreshTime = System.currentTimeMillis();
+                String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
+                latLongTextView.setText(latlong);
+            }
+            dialog.hide();
         }
     }
 
@@ -160,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         temperatureTextView.setText(temp);
         conditionTextView.setText(weatherType.getDescription());
         locationTextView.setText(weather.getCity()+", "+sys.getCountry());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
+        Date resultdate = new Date(lastRefreshTime);
+        lastUpdateTimeTextView.setText(sdf.format(resultdate));
     }
 
     @Override

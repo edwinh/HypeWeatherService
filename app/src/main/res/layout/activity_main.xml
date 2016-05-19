@@ -67,4 +67,13 @@
         android:layout_centerHorizontal="true"
         android:clickable="false" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="LastUpdateTime"
+        android:id="@+id/lastUpdateTimeTextView"
+        android:layout_below="@+id/latLongTextView"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

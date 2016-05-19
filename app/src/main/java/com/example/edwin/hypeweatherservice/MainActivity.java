@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
 
         if (lm != null) {
             String provider = lm.getBestProvider(criteria, true);
+
+            // Check if location services are available
             if (provider.equals(LocationManager.PASSIVE_PROVIDER))
             {
                 dialog.hide();
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
                 return;
             }
             if (location.getTime()+(1*1000*60) < System.currentTimeMillis())
-                // Location is older than 1 minutes and should be refreshed
+                // Location is older than 1 minute and should be refreshed
                 lm.requestLocationUpdates(provider, minTime, minDistance, listener);
 
             // Retrieve weather anyway, regardless of old location
@@ -142,12 +144,17 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         Sys sys = weather.getSys();
         WeatherType weatherType = weather.getWeatherType();
 
-        // TODO:
+        // Determine which icon to use
         int resourceId = getResources().getIdentifier("drawable/icon_"+ weatherType.getIconId(),null,getPackageName());
         @SuppressWarnings("deprecation")
         Drawable weatherIconDrawable = getResources().getDrawable(resourceId);
 
-        weatherIconImageView.setImageDrawable(weatherIconDrawable);
+        if (weatherIconDrawable != null)
+            weatherIconImageView.setImageDrawable(weatherIconDrawable);
+        else {
+            resourceId = getResources().getIdentifier("drawable/na",null,getPackageName());
+            weatherIconImageView.setImageDrawable(getResources().getDrawable(resourceId, getTheme()));
+        }
 
         String temp = String.format("%.1f\u00B0C",main.getTemp());
         temperatureTextView.setText(temp);

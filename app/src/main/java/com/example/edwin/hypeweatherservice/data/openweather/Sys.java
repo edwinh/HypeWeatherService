@@ -1,10 +1,6 @@
 package com.example.edwin.hypeweatherservice.data.openweather;
 
-import com.example.edwin.hypeweatherservice.data.JSONPopulator;
-
 import org.json.JSONObject;
-
-import java.util.Calendar;
 
 /**
  * Created by Edwin on 16-5-2016.

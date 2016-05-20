@@ -1,4 +1,4 @@
-package com.example.edwin.hypeweatherservice.data;
+package com.example.edwin.hypeweatherservice.data.openweather;
 
 import org.json.JSONObject;
 

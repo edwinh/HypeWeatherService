@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements OpenWeatherServiceCallback {
+public class MainActivity extends AppCompatActivity implements OpenWeatherServiceCallback, MyLocationListenerCallback {
 
     private static final String TAG = "MainActivity";
 
@@ -42,45 +44,23 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
     private OpenWeatherService service;
     private ProgressDialog dialog;
     private LocationManager lm;
-    private LocationListener listener;
     private Location oldLocation;
     private long lastRefreshTime;
+    private MyLocationListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i(TAG,"onCreate()");
 
-        weatherIconImageView = (ImageView) findViewById(R.id.weatherIconImageView);
-        temperatureTextView = (TextView) findViewById(R.id.temperatureTextView);
-        conditionTextView = (TextView) findViewById(R.id.conditionTextView);
-        locationTextView = (TextView) findViewById(R.id.locationTextView);
-        latLongTextView = (TextView) findViewById(R.id.latLongTextView);
-        lastUpdateTimeTextView = (TextView) findViewById(R.id.lastUpdateTimeTextView);
+        weatherIconImageView   = (ImageView) findViewById(R.id.weatherIconImageView);
+        temperatureTextView    = (TextView)  findViewById(R.id.temperatureTextView);
+        conditionTextView      = (TextView)  findViewById(R.id.conditionTextView);
+        locationTextView       = (TextView)  findViewById(R.id.locationTextView);
+        latLongTextView        = (TextView)  findViewById(R.id.latLongTextView);
+        lastUpdateTimeTextView = (TextView)  findViewById(R.id.lastUpdateTimeTextView);
         lm = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
-        listener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                lm.removeUpdates(listener);
-                String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
-                latLongTextView.setText(latlong);
-
-                if (((lastRefreshTime+(10*60*1000)) < System.currentTimeMillis()) || (location.distanceTo(oldLocation) > 5000) ) {
-                    service.refreshWeather(location);
-                    lastRefreshTime = System.currentTimeMillis();
-                }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {
-                latLongTextView.setText("Provider Disabled");
-            }
-        };
 
         showWeather(null);
     }
@@ -91,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         final Criteria criteria;
 
         service = new OpenWeatherService(this);
+        listener = new MyLocationListener(this);
         dialog = new ProgressDialog(this);
         dialog.setMessage("Getting the weather for your location...");
         dialog.show();
@@ -117,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
                 Toast.makeText(this, "Turn on your location services", Toast.LENGTH_LONG).show();
                 return;
             }
-
 
             Location location = lm.getLastKnownLocation(provider);
             // Store old location to calculate distance from new location
@@ -183,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
         temperatureTextView.setText(temp);
         conditionTextView.setText(weatherType.getDescription());
         locationTextView.setText(weather.getCity()+", "+sys.getCountry());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
         Date resultdate = new Date(lastRefreshTime);
         lastUpdateTimeTextView.setText(sdf.format(resultdate));
     }
@@ -192,5 +172,17 @@ public class MainActivity extends AppCompatActivity implements OpenWeatherServic
     public void serviceFailure(Exception exception) {
         dialog.hide();
         Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void LocationChanged(Location location) {
+        lm.removeUpdates(listener);
+        String latlong = String.format("%f, %f", location.getLatitude(), location.getLongitude());
+        latLongTextView.setText(latlong);
+
+        if (((lastRefreshTime+(10*60*1000)) < System.currentTimeMillis()) || (location.distanceTo(oldLocation) > 5000) ) {
+            service.refreshWeather(location);
+            lastRefreshTime = System.currentTimeMillis();
+        }
     }
 }

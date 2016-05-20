@@ -1,7 +1,5 @@
 package com.example.edwin.hypeweatherservice.data.openweather;
 
-import com.example.edwin.hypeweatherservice.data.JSONPopulator;
-
 import org.json.JSONObject;
 
 /**
